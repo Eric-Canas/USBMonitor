@@ -11,11 +11,11 @@ from __future__ import annotations
 
 import sys
 import threading
-from time import sleep
+import re
 from warnings import warn
 from abc import ABC, abstractmethod
 
-SECONDS_BETWEEN_CHECKS = 0.5
+SECONDS_BETWEEN_CHECKS = 1
 
 ID_VENDOR_ID, ID_MODEL_ID, ID_VENDOR, ID_MODEL, ID_SERIAL, ID_USB_INTERFACES, ID_REVISION = \
     'ID_VENDOR_ID', 'ID_MODEL_ID', 'ID_VENDOR', 'ID_MODEL', 'ID_SERIAL', 'ID_USB_INTERFACES', 'ID_REVISION'
@@ -27,20 +27,20 @@ ID_USB_CLASS_FROM_DATABASE, ID_VENDOR_FROM_DATABASE, ID_MODEL_FROM_DATABASE = \
 DEVICE_ID, PNP_DEVICE_ID = 'DeviceID', 'PNPDeviceID'
 
 LINUX_TO_WINDOWS_ATTRIBUTES = {
-    ID_VENDOR_ID: DEVICE_ID,
     ID_MODEL_ID: 'HardwareID',
-    ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
-    ID_VENDOR: 'Manufacturer',
+    ID_VENDOR: 'HardwareID',
     ID_MODEL: 'Name',
-    ID_VENDOR_FROM_DATABASE: 'Description',
+    ID_VENDOR_FROM_DATABASE: 'Manufacturer',#'Description',
     ID_MODEL_FROM_DATABASE: 'Caption',
+    DEVNAME: DEVICE_ID,
+    ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
     ID_USB_INTERFACES: 'CompatibleID',
     DEVTYPE: PNP_DEVICE_ID,
 }
 
 LINUX_ATTRIBUTES = tuple(LINUX_TO_WINDOWS_ATTRIBUTES.keys())
-WINDOWS_TO_LINUX_ATTRIBUTES = {v: k for k, v in LINUX_TO_WINDOWS_ATTRIBUTES.items()}
-WINDOWS_USB_QUERY = f"SELECT {', '.join(WINDOWS_TO_LINUX_ATTRIBUTES.keys())} FROM Win32_PnPEntity WHERE {PNP_DEVICE_ID} LIKE 'USB%'"
+WINDOWS_USB_QUERY = f"SELECT {', '.join(set(LINUX_TO_WINDOWS_ATTRIBUTES.values()))} FROM Win32_PnPEntity " \
+                    f"WHERE {PNP_DEVICE_ID} LIKE 'USB%'"
 
 
 class USBMonitor:
@@ -61,7 +61,7 @@ class USBMonitor:
 class _USBDetectorBase(ABC):
     def __init__(self):
         self._thread = None
-        self._stop_thread = False
+        self._stop_thread = threading.Event()
         self.lock = threading.Lock()
 
         self.on_start_devices = self.get_current_available_devices()
@@ -145,29 +145,37 @@ class _USBDetectorBase(ABC):
         :param check_every_seconds: int | float. The number of seconds to wait between each check for changes in the
                 USB devices. Defaults to 0.5 seconds.
         """
-        while not self._stop_thread:
+        assert self._thread is not None, "The USB monitor is not running"
+        if self._stop_thread.is_set():
+            warn("USB monitor can not be started because it is already stopped. Call stop_monitoring() first",
+                 RuntimeWarning)
+        while not self._stop_thread.is_set():
             self.check_changes(on_connect=on_connect, on_disconnect=on_disconnect)
-            sleep(check_every_seconds)
+            self._stop_thread.wait(check_every_seconds)
 
 
-    def stop_monitoring(self) -> None:
+    def stop_monitoring(self, warn_if_was_stopped: bool = True) -> None:
         """
         Stops monitoring the USB devices.
+        :param warn_if_was_stopped: bool. Whether to warn if the USB monitor was already stopped.
         """
         if self._thread is not None:
-            self._stop_thread = True
+            self._stop_thread.set()
             self._thread.join()
             self._thread = None
-        else:
+        elif warn_if_was_stopped:
             warn("USB monitor can not be stopped because it is not running", RuntimeWarning)
-        self._stop_thread = False
+        self._stop_thread.clear()
 
     def __del__(self):
-        self.stop_monitoring()
+        self.stop_monitoring(warn_if_was_stopped=False)
 
 class WindowsUSBDetector(_USBDetectorBase):
     def __init__(self):
         self._wmi_interface = None
+        self.__REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR: r'VID_([0-9A-Fa-f]{4})',
+                                   DEVTYPE: r'^(.+?)\\'}
+        self.__NON_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30")
         super(WindowsUSBDetector, self).__init__()
 
     def get_current_available_devices(self) -> dict[str, dict[str, str]]:
@@ -180,8 +188,11 @@ class WindowsUSBDetector(_USBDetectorBase):
         if self._wmi_interface is None:
             self._wmi_interface = self.__create_wmi_interface()
         devices = self._wmi_interface.query(WINDOWS_USB_QUERY)
-        return {getattr(device, DEVICE_ID): {new_name: getattr(device, attribute) for attribute, new_name in WINDOWS_TO_LINUX_ATTRIBUTES.items()}
-                for device in devices}
+        devices = {getattr(device, DEVICE_ID): {new_name: getattr(device, attribute) for new_name, attribute in LINUX_TO_WINDOWS_ATTRIBUTES.items()}
+                    for device in devices}
+        devices = self.__filter_devices(devices=devices)
+        devices = self.__finetune_regex_attributes(devices=devices)
+        return devices
 
     def _monitor_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
                          check_every_seconds: int | float = SECONDS_BETWEEN_CHECKS) -> None:
@@ -199,6 +210,50 @@ class WindowsUSBDetector(_USBDetectorBase):
         super(WindowsUSBDetector, self)._monitor_changes(on_connect=on_connect, on_disconnect=on_disconnect,
                                                          check_every_seconds=check_every_seconds)
 
+    def __filter_devices(self, devices: dict[str, dict[str, tuple[str]|str]]) -> dict[str, dict[str, tuple[str]|str]]:
+        """
+        Filters the devices to only include the ones that are USB devices.
+        :param devices: dict[str, dict[str, str]]. The dictionary of devices to filter.
+        :return: dict[str, dict[str, str]]. The filtered devices.
+        """
+        return {device_id: device_info for device_id, device_info in devices.items()
+                if not any(substring in device_info[DEVTYPE] for substring in self.__NON_USB_DEVICES_IDS)}
+
+    def __finetune_regex_attributes(self, devices: dict[str, dict[str | tuple[str, ...]]]) -> dict[str, dict[str, str]]:
+        """
+        Transforms some attributes to be more similar to the Linux attributes.
+        :param devices: dict[str, str|tuple[str,...]]. The dictionary of devices to transform.
+        :return: dict[str, dict[str, str]]. The transformed devices.
+        """
+        for device_id, device_info in devices.items():
+            new_attributes = {attribute: self.__apply_regex(device_info[attribute], regex)
+                                for attribute, regex in self.__REGEX_ATTRIBUTES.items() if attribute in device_info}
+            device_info.update(new_attributes)
+        return devices
+
+    def __apply_regex(self, value: tuple[str] | str, regex: str) -> str:
+        """
+        Apply the regex to a value, taking into account if it is a tuple or not.
+        :param value: tuple[str] | str. The value to apply the regex to.
+        :param regex: str. The regex to apply.
+        :return: str. The value after applying the regex.
+        """
+        if isinstance(value, str):
+            value = (value,)
+        values_found = []
+        for value in value:
+            match = re.search(regex, value)
+            if match is not None:
+                values_found.append(match.group(1))
+        # If no value was found, return the original value
+        if len(values_found) == 0:
+            warn(f"Could not find a value for the regex '{regex}' in the value '{value}'")
+            return value
+        # Otherwise, return check there are no inconsistencies and return the value
+        assert all(value == values_found[0] for value in values_found), "The values found are not all the same"
+        return values_found[0]
+
+
     def __create_wmi_interface(self):
         from pythoncom import CoInitialize
         CoInitialize()
@@ -211,9 +266,10 @@ class LinuxUSBDetector(_USBDetectorBase):
         import pyudev
         self.context = pyudev.Context()
         self.monitor = None
+        self.__TUPLE_ATTRIBUTES_SEPARATORS = {ID_USB_INTERFACES: ':'}
         super(LinuxUSBDetector, self).__init__()
 
-    def get_current_available_devices(self) -> dict[str, dict[str, str]]:
+    def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.
@@ -225,9 +281,24 @@ class LinuxUSBDetector(_USBDetectorBase):
         for device in usb_devices:
             device_id = device.device_path
             device_info = {attr: device.get(attr, "") for attr in LINUX_ATTRIBUTES}
+            device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
             devices_info[device_id] = device_info
 
         return devices_info
+
+    def __generate_tuple_attributes_from_string(self, device_info: dict[str, str]) -> dict[str, tuple[str]|str]:
+        """
+        Generates a tuple of attributes for those attributes that are expected to be a tuple,
+        but are stored as a string.
+        :param device_info: dict[str, str]. The device information.
+        :return: dict[str, tuple[str]|str]. The device information with the tuple attributes.
+        """
+        for attribute, separator in self.__TUPLE_ATTRIBUTES_SEPARATORS.items():
+            if attribute in device_info:
+                assert isinstance(device_info[attribute], str), f"The attribute '{attribute}' is expected to be a string"
+                # noinspection PyTypeChecker
+                device_info[attribute] = tuple(value for value in device_info[attribute].split(separator) if value != "")
+        return device_info
 
     def _monitor_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
                         check_every_seconds: int | float = SECONDS_BETWEEN_CHECKS) -> None:
@@ -237,25 +308,25 @@ class LinuxUSBDetector(_USBDetectorBase):
             self.monitor = pyudev.Monitor.from_netlink(self.context)
             self.monitor.filter_by(subsystem='usb')
 
-        def handle_device_event(device):
-            action = device.action
-            if device.get(DEVTYPE) == 'usb_device':
-                device_id = device.device_path
-                device_info = {attr: device.get(attr, "") for attr in LINUX_ATTRIBUTES}
-
-                if action == "add" and on_connect is not None:
-                    on_connect(device_id, device_info)
-                elif action == "remove" and on_disconnect is not None:
-                    on_disconnect(device_id, device_info)
-
-        observer = pyudev.MonitorObserver(self.monitor, callback=handle_device_event)
+        self._thread = pyudev.MonitorObserver(self.monitor, callback=self.__handle_device_event)
 
         # Start the observer thread
-        observer.start()
+        self._thread.start()
 
         # Keep the main thread alive, checking for changes every specified interval
-        while observer.is_alive():
-            observer.join(check_every_seconds)
+        while not self._stop_thread.is_set():
+            self._stop_thread.wait(check_every_seconds)
+
+    def __handle_device_event(self, device):
+        action = device.action
+        if device.get(DEVTYPE) == 'usb_device':
+            device_id = device.device_path
+            device_info = {attr: device.get(attr, "") for attr in LINUX_ATTRIBUTES}
+            device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
+            if action == "add" and on_connect is not None:
+                on_connect(device_id, device_info)
+            elif action == "remove" and on_disconnect is not None:
+                on_disconnect(device_id, device_info)
 
 
 if __name__ == '__main__':
@@ -268,3 +339,4 @@ if __name__ == '__main__':
     _input = ''
     while _input != 'q':
         _input = input("Monitoring USB connections. Press 'q'+Enter to quit")
+    usb_monitor.stop_monitoring()
