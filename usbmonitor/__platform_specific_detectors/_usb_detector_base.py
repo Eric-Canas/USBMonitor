@@ -1,3 +1,15 @@
+"""
+_USBDetectorBase: This abstract base class provides the core functionality for monitoring USB devices on different
+platforms. It defines the required methods and attributes, as well as common functionality for checking device changes,
+starting and stopping the monitoring process, and maintaining the state of the monitoring thread. The _USBDetectorBase
+class is intended to be subclassed by platform-specific implementations to provide the necessary support for USB
+device monitoring.
+
+Author: Eric-Canas
+Date: 27-03-2023
+Email: eric@ericcanas.com
+Github: https://github.com/Eric-Canas
+"""
 from __future__ import annotations
 
 import threading
@@ -33,11 +45,11 @@ class _USBDetectorBase(ABC):
         return removed_devices, added_devices
 
     @abstractmethod
-    def get_current_available_devices(self) -> dict[str, dict[str, str]]:
+    def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.
-        :return: dict[str, dict[str, str]]. The key is the device ID, the value is a dictionary of the device's
+        :return: dict[str, dict[str, str|tuple[str, ...]]. The key is the device ID, the value is a dictionary of the device's
                 information.
         """
         raise NotImplementedError("This method must be implemented in the child class")

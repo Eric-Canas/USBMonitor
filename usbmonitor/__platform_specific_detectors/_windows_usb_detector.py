@@ -1,19 +1,27 @@
+"""
+_WindowsUSBDetector: This platform-specific implementation of the _USBDetectorBase class is designed for Windows
+systems. It provides the necessary functionality to detect USB devices connected to a Windows system and monitor
+changes in their connections. The class utilizes the WMI (Windows Management Instrumentation) library to interact with
+the Windows system's device management subsystem.
+
+Author: Eric-Canas
+Date: 27-03-2023
+Email: eric@ericcanas.com
+Github: https://github.com/Eric-Canas
+"""
+
 from __future__ import annotations
 import re
 from warnings import warn
 
 
 from ._usb_detector_base import _USBDetectorBase
-from ..attributes import ID_MODEL_ID, ID_VENDOR, DEVTYPE
-from usbmonitor.__platform_specific_detectors._constants import _DEVICE_ID, _PNP_DEVICE_ID, _LINUX_TO_WINDOWS_ATTRIBUTES, _SECONDS_BETWEEN_CHECKS
+from ..attributes import DEVTYPE
+from usbmonitor.__platform_specific_detectors._constants import _DEVICE_ID, _LINUX_TO_WINDOWS_ATTRIBUTES, \
+    _SECONDS_BETWEEN_CHECKS, _REGEX_ATTRIBUTES, _NON_WINDOWS_USB_DEVICES_IDS, _WINDOWS_USB_QUERY
 
 
 class _WindowsUSBDetector(_USBDetectorBase):
-    __REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR: r'VID_([0-9A-Fa-f]{4})',
-                          DEVTYPE: r'^(.+?)\\'}
-    __WINDOWS_USB_QUERY = f"SELECT {', '.join(set(_LINUX_TO_WINDOWS_ATTRIBUTES.values()))} FROM Win32_PnPEntity " \
-                          f"WHERE {_PNP_DEVICE_ID} LIKE 'USB%'"
-    __NON_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30")
     def __init__(self):
         self._wmi_interface = None
         # CONSTANTS
@@ -28,7 +36,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         """
         if self._wmi_interface is None:
             self._wmi_interface = self.__create_wmi_interface()
-        devices = self._wmi_interface.query(_WindowsUSBDetector.__WINDOWS_USB_QUERY)
+        devices = self._wmi_interface.query(_WINDOWS_USB_QUERY)
         devices = {getattr(device, _DEVICE_ID): {new_name: getattr(device, attribute)
                                                  for new_name, attribute in _LINUX_TO_WINDOWS_ATTRIBUTES.items()}
                     for device in devices}
@@ -59,7 +67,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         :return: dict[str, dict[str, str]]. The filtered devices.
         """
         return {device_id: device_info for device_id, device_info in devices.items()
-                if not any(substring in device_info[DEVTYPE] for substring in _WindowsUSBDetector.__NON_USB_DEVICES_IDS)}
+                if not any(substring in device_info[DEVTYPE] for substring in _NON_WINDOWS_USB_DEVICES_IDS)}
 
     def __finetune_regex_attributes(self, devices: dict[str, dict[str | tuple[str, ...]]]) -> dict[str, dict[str, str]]:
         """
@@ -69,7 +77,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         """
         for device_id, device_info in devices.items():
             new_attributes = {attribute: self.__apply_regex(device_info[attribute], regex)
-                              for attribute, regex in _WindowsUSBDetector.__REGEX_ATTRIBUTES.items()
+                              for attribute, regex in _REGEX_ATTRIBUTES.items()
                               if attribute in device_info}
             device_info.update(new_attributes)
         return devices

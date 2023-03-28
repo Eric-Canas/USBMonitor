@@ -16,3 +16,9 @@ _LINUX_TO_WINDOWS_ATTRIBUTES = {
 }
 
 _SECONDS_BETWEEN_CHECKS = 1
+
+_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR: r'VID_([0-9A-Fa-f]{4})',
+                     DEVTYPE: r'^(.+?)\\'}
+_NON_WINDOWS_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30")
+_WINDOWS_USB_QUERY = f"SELECT {', '.join(set(_LINUX_TO_WINDOWS_ATTRIBUTES.values()))} FROM Win32_PnPEntity " \
+                          f"WHERE {_PNP_DEVICE_ID} LIKE 'USB%'"

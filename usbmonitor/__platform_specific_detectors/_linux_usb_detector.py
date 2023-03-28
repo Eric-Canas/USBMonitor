@@ -1,3 +1,15 @@
+"""
+_LinuxUSBDetector: This platform-specific implementation of the _USBDetectorBase class is designed for Linux systems.
+It provides the necessary functionality to detect USB devices connected to a Linux system and monitor changes in their
+connections. The class utilizes the pyudev library to interact with the Linux system's device management
+subsystem (udev).
+
+Author: Eric-Canas
+Date: 28-03-2023
+Email: eric@ericcanas.com
+Github: https://github.com/Eric-Canas
+"""
+
 from __future__ import annotations
 
 from usbmonitor.__platform_specific_detectors._constants import _SECONDS_BETWEEN_CHECKS
