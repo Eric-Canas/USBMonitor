@@ -12,9 +12,10 @@ Github: https://github.com/Eric-Canas
 
 from __future__ import annotations
 
-from usbmonitor.__platform_specific_detectors._constants import _SECONDS_BETWEEN_CHECKS
+from ._constants import _SECONDS_BETWEEN_CHECKS, _LINUX_TUPLE_ATTRIBUTES_SEPARATORS
+from ..attributes import ID_VENDOR_ID, DEVTYPE, DEVICE_ATTRIBUTES
+
 from ._usb_detector_base import _USBDetectorBase
-from ..attributes import ID_USB_INTERFACES, ID_VENDOR_ID, DEVTYPE, DEVICE_ATTRIBUTES
 
 
 class _LinuxUSBDetector(_USBDetectorBase):
@@ -22,7 +23,6 @@ class _LinuxUSBDetector(_USBDetectorBase):
         import pyudev
         self.context = pyudev.Context()
         self.monitor = None
-        self.__TUPLE_ATTRIBUTES_SEPARATORS = {ID_USB_INTERFACES: ':'}
         super(_LinuxUSBDetector, self).__init__()
 
     def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
@@ -49,7 +49,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
         :param device_info: dict[str, str]. The device information.
         :return: dict[str, tuple[str]|str]. The device information with the tuple attributes.
         """
-        for attribute, separator in self.__TUPLE_ATTRIBUTES_SEPARATORS.items():
+        for attribute, separator in _LINUX_TUPLE_ATTRIBUTES_SEPARATORS.items():
             if attribute in device_info:
                 assert isinstance(device_info[attribute], str), f"The attribute '{attribute}' is expected to be a string"
                 # noinspection PyTypeChecker

@@ -14,11 +14,11 @@ from __future__ import annotations
 import re
 from warnings import warn
 
+from ..attributes import DEVTYPE
+from ._constants import _DEVICE_ID, _LINUX_TO_WINDOWS_ATTRIBUTES, _SECONDS_BETWEEN_CHECKS, _WINDOWS_REGEX_ATTRIBUTES, \
+    _WINDOWS_NON_USB_DEVICES_IDS, _WINDOWS_USB_QUERY
 
 from ._usb_detector_base import _USBDetectorBase
-from ..attributes import DEVTYPE
-from usbmonitor.__platform_specific_detectors._constants import _DEVICE_ID, _LINUX_TO_WINDOWS_ATTRIBUTES, \
-    _SECONDS_BETWEEN_CHECKS, _REGEX_ATTRIBUTES, _NON_WINDOWS_USB_DEVICES_IDS, _WINDOWS_USB_QUERY
 
 
 class _WindowsUSBDetector(_USBDetectorBase):
@@ -67,7 +67,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         :return: dict[str, dict[str, str]]. The filtered devices.
         """
         return {device_id: device_info for device_id, device_info in devices.items()
-                if not any(substring in device_info[DEVTYPE] for substring in _NON_WINDOWS_USB_DEVICES_IDS)}
+                if not any(substring in device_info[DEVTYPE] for substring in _WINDOWS_NON_USB_DEVICES_IDS)}
 
     def __finetune_regex_attributes(self, devices: dict[str, dict[str | tuple[str, ...]]]) -> dict[str, dict[str, str]]:
         """
@@ -77,7 +77,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         """
         for device_id, device_info in devices.items():
             new_attributes = {attribute: self.__apply_regex(device_info[attribute], regex)
-                              for attribute, regex in _REGEX_ATTRIBUTES.items()
+                              for attribute, regex in _WINDOWS_REGEX_ATTRIBUTES.items()
                               if attribute in device_info}
             device_info.update(new_attributes)
         return devices

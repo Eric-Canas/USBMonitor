@@ -16,7 +16,7 @@ import threading
 from warnings import warn
 from abc import ABC, abstractmethod
 
-from usbmonitor.__platform_specific_detectors._constants import _SECONDS_BETWEEN_CHECKS
+from ._constants import _SECONDS_BETWEEN_CHECKS
 
 class _USBDetectorBase(ABC):
     def __init__(self):
