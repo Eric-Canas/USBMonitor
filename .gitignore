@@ -1,1 +1,4 @@
 .idea/
+*.pyc
+dist/
+usb_monitor.egg-info/
