@@ -13,10 +13,11 @@ pip install usbmonitor
 ```
 
 ## Usage
-**USBMonitor** provides a simple and streamlined API to monitor USB device connections and disconnections, as well as to examine device attributes:
-`USBMonitor` class
+Using **USBMonitor** is both simple and straight-forward. In most cases, you'll just want to start the monitoring _Daemon_, defining the `on_connect` and `on_disconnect` callback functions to manage events when a USB device connects or disconnects. Here's a basic example:
 
-USBMonitor is the unique class you'll be using when working with USBMonitor. It will provide you all the necessary methods to track your USB connections and disconnections, or to check the properties of the current connected devices
+```python
+
+```
 
 ## API Reference
 
