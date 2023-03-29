@@ -3,7 +3,7 @@
 
 With **USBMonitor**, developers can stay up-to-date with any changes in the connected USB devices, allowing them to **trigger specific actions** whenever a USB device is connected or disconnected. By ensuring **consistent functionality across various operating systems**, **USBMonitor** removes the need to address platform-specific quirks, inconsistencies, or incompatibilities, resulting in a smooth and efficient USB device management experience. The uniformity in functionality significantly enhances **code compatibility**, minimizing the risk of **code issues** or **unexpected breaks** when moving between platforms.
 
-At its core, **USBMonitor** utilizes pyudev (for Linux environments) and WMI (for Windows environments), handling all the low-level intricacies and translating OS-specific information to ensure consistency across both systems.
+At its core, **USBMonitor** utilizes <a href="https://pyudev.readthedocs.io/en/latest/" target="_blank">pyudev</a> (for Linux environments) and <a href="https://github.com/mhammond/pywin32" target="_blank">WMI</a> (for Windows environments), handling all the low-level intricacies and translating OS-specific information to ensure consistency across both systems.
 
 ## Installation
 To install **USBMonitor**, simply run:
@@ -45,7 +45,7 @@ Returns a tuple of two dictionaries, one containing the devices that have been *
 
 - `update_last_check_devices`: **bool**. If `True` it will update the internal `USBMonitor.last_check_devices` attribute. So the next time you'll call this method, it will check for differences against the devices found in that current call. If `False` it won't update the `USBMonitor.last_check_devices` attribute. 
 
-- Returns: **tuple[dict[str, dict[str, str|tuple[str, ...]]], dict[str, dict[str, str|tuple[str, ...]]]]**: A tuple containing two dictionaries. The first dictionary contains the information of the devices that were removed since the last check and the second dictionary contains the information of the new added devices. All values are `strings` except for `ID_USB_INTERFACES`, which is a `tuple` of `string`.
+- Returns: **tuple[dict[str, dict[str, str|tuple[str, ...]]], dict[str, dict[str, str|tuple[str, ...]]]]**: A `tuple` containing two `dictionaries`. The first `dictionary` contains the information of the devices that were **removed** since the last check and the second dictionary contains the information of the new **added** devices. All values are `strings` except for `ID_USB_INTERFACES`, which is a `tuple` of `string`.
 
 ### USBMonitor.check_changes(on_connect = None, on_disconnect = None, update_last_check_devices = True)
 Checks for any new connections or disconnections of USB devices since the last check. If a device has been removed, the `on_disconnect` function will be called with the `Device ID` as the first argument and the dictionary of device information as the second argument. The same will occur with the `on_connect` function if any new device have been added. Internally this function will just run `USBMonitor.changes_from_last_check` and will execute the callbacks for each returned device
