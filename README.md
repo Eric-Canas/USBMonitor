@@ -3,6 +3,8 @@
 
 With **USBMonitor**, developers can stay up-to-date with any changes in the connected USB devices, allowing them to **trigger specific actions** whenever a USB device is connected or disconnected. By ensuring **consistent functionality across various operating systems**, **USBMonitor** removes the need to address platform-specific quirks, inconsistencies, or incompatibilities, resulting in a smooth and efficient USB device management experience. The uniformity in functionality significantly enhances **code compatibility**, minimizing the risk of **code issues** or **unexpected breaks** when moving between platforms.
 
+At its core, **USBMonitor** utilizes pyudev (for Linux environments) and WMI (for Windows environments), handling all the low-level intricacies and translating OS-specific information to ensure consistency across both systems.
+
 ## Installation
 To install **USBMonitor**, simply run:
 
