@@ -1,7 +1,7 @@
 # USBMonitor
 <img alt="USBMonitor" title="USBMonitor" src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/logo.png" width="20%" align="left"> **USBMonitor** is a versatile **cross-platform** library that simplifies **USB device monitoring** for both _Windows_ and _Linux_ systems. It enables developers to effortlessly track device **connections**, **disconnections**, and access to all connected device **attributes**.
 
-With **USBMonitor**, developers can stay up-to-date with any changes in the connected USB devices, allowing them to **trigger specific actions** whenever a USB device is connected or disconnected. By ensuring **consistent functionality across various operating systems**, **USBMonitor** removes the need to address platform-specific quirks, inconsistencies, or incompatibilities, resulting in a smooth and efficient USB device management experience. The uniformity in functionality significantly enhances **code compatibility**, minimizing the risk of code issues when moving between platforms.
+With **USBMonitor**, developers can stay up-to-date with any changes in the connected USB devices, allowing them to **trigger specific actions** whenever a USB device is connected or disconnected. By ensuring **consistent functionality across various operating systems**, **USBMonitor** removes the need to address platform-specific quirks, inconsistencies, or incompatibilities, resulting in a smooth and efficient USB device management experience. The uniformity in functionality significantly enhances **code compatibility**, minimizing the risk of **code issues** or **unexpected breaks** when moving between platforms.
 
 ## Installation
 To install USBMonitor, simply run:
