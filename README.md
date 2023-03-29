@@ -17,7 +17,7 @@ Using **USBMonitor** is both simple and straight-forward. In most cases, you'll 
 
 ```python
 from usbmonitor import USBMonitor
-from attributes import ID_MODEL, ID_MODEL_ID
+from usbmonitor.attributes import ID_MODEL, ID_MODEL_ID
 
 # Define the `on_connect` and `on_disconnect` callbacks
 on_connect = lambda device_id, device_info: print(f"Connected: {device_info[ID_MODEL]} ({device_info[ID_MODEL_ID]})")
