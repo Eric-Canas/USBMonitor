@@ -64,8 +64,11 @@ class _LinuxUSBDetector(_USBDetectorBase):
             action = device.action
             if device.get(DEVTYPE) == 'usb_device':
                 device_id = device.device_path
-                device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
-                device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
+                if device_id not in self.last_check_devices:
+                    device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
+                    device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
+                else:
+                    device_info = self.last_check_devices[device_id].copy()
                 if action == "add" and on_connect is not None:
                     on_connect(device_id, device_info)
                 elif action == "remove" and on_disconnect is not None:
