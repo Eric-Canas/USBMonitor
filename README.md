@@ -9,7 +9,7 @@ At its core, **USBMonitor** utilizes <a href="https://pyudev.readthedocs.io/en/l
 To install **USBMonitor**, simply run:
 
 ```bash
-pip install usbmonitor
+pip install usb-monitor
 ```
 
 ## Usage
