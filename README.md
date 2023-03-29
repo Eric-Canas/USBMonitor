@@ -16,10 +16,24 @@ USBMonitor is the unique class you'll be using when working with USBMonitor. It 
 
 ## API Reference
 
+### USBMonitor.start_monitoring(on_connect = None, on_disconnect = None, check_every_seconds = 0.5)
+Starts a daemon that continuously monitors the connected USB devices in order to detect new connections or disconnections. When a device is disconnected, the `on_disconnect` callback function is invoked with the Device ID as the first argument and the dictionary of device information as the second argument. Similarly, when a new device is connected, the `on_connect` callback function is called with the same arguments. This allows developers to promptly respond to any changes in the connected USB devices and perform necessary actions.
+
+- on_connect: **callable | None**. The function to call every time a device is **added**. It is expected to have the following format `on_connect(device_id: str, device_info: dict[str, dict[str, str|tuple[str, ...]]])`
+- on_disconnect: **callable | None**. The function to call every time a device is **removed**. It is expected to have the following format `on_disconnect(device_id: str, device_info: dict[str, dict[str, str|tuple[str, ...]]])`
+- check_every_seconds: **int | float**. Seconds to wait between each check for changes in the USB devices. Default value is 0.5 seconds.
+
+### USBMonitor.stop_monitoring(warn_if_was_stopped=True)
+Stops the monitoring of USB devices. This function will **stop** the daemon launched by `USBMonitor.start_monitoring`
+
+- warn_if_was_stopped: **bool**. If set to `True`, this function will issue a warning if the monitoring of USB devices was already stopped (the daemon was not running).
+
+
 ### USBMonitor.get_current_available_devices()
 Returns a dictionary of the currently available devices, where the key is the `Device ID` and the value is a dictionary containing the device's information. All the keys of this dictionary can be found at `attributes.DEVICE_ATTRIBUTES`. They always correspond with the default Linux device properties (independently of the OS where the library is running).
 
 - Returns: **dict[str, dict[str, str|tuple[str, ...]]]**: A dictionary containing the currently available devices. All values are strings except for `ID_USB_INTERFACES`, which is a tuple `of string`
+
 
 
 ### USBMonitor.changes_from_last_check(update_last_check_devices = True)
