@@ -13,7 +13,7 @@ pip install usbmonitor
 ```
 
 ## Usage
-Using **USBMonitor** is both simple and straight-forward. In most cases, you'll just want to start the monitoring _Daemon_, defining the `on_connect` and `on_disconnect` callback functions to manage events when a USB device connects or disconnects. Here's a basic example:
+Using **USBMonitor** is both simple and straight-forward. In most cases, you'll just want to start the [monitoring _Daemon_](#usbmonitorstart_monitoringon_connect--none-on_disconnect--none-check_every_seconds--05), defining the `on_connect` and `on_disconnect` callback functions to manage events when a USB device connects or disconnects. Here's a basic example:
 
 ```python
 
