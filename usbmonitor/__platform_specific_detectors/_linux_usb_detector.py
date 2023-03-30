@@ -13,7 +13,7 @@ Github: https://github.com/Eric-Canas
 from __future__ import annotations
 
 from ._constants import _SECONDS_BETWEEN_CHECKS, _LINUX_TUPLE_ATTRIBUTES_SEPARATORS
-from ..attributes import ID_VENDOR_ID, DEVTYPE, DEVICE_ATTRIBUTES
+from ..attributes import ID_VENDOR_ID, DEVTYPE, DEVICE_ATTRIBUTES, DEVNAME
 
 from ._usb_detector_base import _USBDetectorBase
 
@@ -35,7 +35,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
         usb_devices = [device for device in self.context.list_devices(subsystem='usb') if ID_VENDOR_ID in device]
         devices_info = {}
         for device in usb_devices:
-            device_id = device.device_path
+            device_id = device[DEVNAME]
             device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
             device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
             devices_info[device_id] = device_info
@@ -63,16 +63,16 @@ class _LinuxUSBDetector(_USBDetectorBase):
         def __handle_device_event(device):
             action = device.action
             if device.get(DEVTYPE) == 'usb_device':
-                device_id = device.device_path
-                if device_id not in self.last_check_devices:
+                device_id = device[DEVNAME]
+                if action == "add" and on_connect is not None:
                     device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
                     device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
-                else:
-                    device_info = self.last_check_devices[device_id].copy()
-                if action == "add" and on_connect is not None:
                     on_connect(device_id, device_info)
+                    self.last_check_devices = self.get_current_available_devices()
                 elif action == "remove" and on_disconnect is not None:
+                    device_info = self.last_check_devices[device_id].copy()
                     on_disconnect(device_id, device_info)
+                    self.last_check_devices = self.get_current_available_devices()
 
         if self.monitor is None:
             self.monitor = pyudev.Monitor.from_netlink(self.context)
