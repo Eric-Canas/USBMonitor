@@ -16,7 +16,7 @@ from warnings import warn
 
 from ..attributes import DEVTYPE
 from ._constants import _DEVICE_ID, _LINUX_TO_WINDOWS_ATTRIBUTES, _SECONDS_BETWEEN_CHECKS, _WINDOWS_REGEX_ATTRIBUTES, \
-    _WINDOWS_NON_USB_DEVICES_IDS, _WINDOWS_USB_QUERY
+    _WINDOWS_NON_USB_DEVICES_IDS, _WINDOWS_USB_QUERY, _WINDOWS_TO_LOWERCASE_ATTRIBUTES
 
 from ._usb_detector_base import _USBDetectorBase
 
@@ -41,7 +41,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
                                                  for new_name, attribute in _LINUX_TO_WINDOWS_ATTRIBUTES.items()}
                     for device in devices}
         devices = self.__filter_devices(devices=devices)
-        devices = self.__finetune_regex_attributes(devices=devices)
+        devices = self.__finetune_incompatible_attributes(devices=devices)
         return devices
 
     def _monitor_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
@@ -69,7 +69,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         return {device_id: device_info for device_id, device_info in devices.items()
                 if not any(substring in device_info[DEVTYPE] for substring in _WINDOWS_NON_USB_DEVICES_IDS)}
 
-    def __finetune_regex_attributes(self, devices: dict[str, dict[str | tuple[str, ...]]]) -> dict[str, dict[str, str]]:
+    def __finetune_incompatible_attributes(self, devices: dict[str, dict[str | tuple[str, ...]]]) -> dict[str, dict[str, str]]:
         """
         Transforms some attributes to be more similar to the Linux attributes.
         :param devices: dict[str, str|tuple[str,...]]. The dictionary of devices to transform.
@@ -79,6 +79,8 @@ class _WindowsUSBDetector(_USBDetectorBase):
             new_attributes = {attribute: self.__apply_regex(device_info[attribute], regex)
                               for attribute, regex in _WINDOWS_REGEX_ATTRIBUTES.items()
                               if attribute in device_info}
+            device_info.update(new_attributes)
+            new_attributes = {attr: device_info[attr].lower() for attr in _WINDOWS_TO_LOWERCASE_ATTRIBUTES}
             device_info.update(new_attributes)
         return devices
 
