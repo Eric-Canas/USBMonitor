@@ -35,9 +35,9 @@ monitor.start_monitoring(on_connect=on_connect, on_disconnect=on_disconnect)
 # If you don't need it anymore stop the daemon
 monitor.stop_monitoring()
 ```
-<img alt="USBMonitor" title="USBMonitor" src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif" width="48%" align="left">
-<img alt="USBMonitor" title="USBMonitor" src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif" width="48%" align="right">
-<br clear="both">
+Linux | Windows
+:---: | :---:
+![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
 
 
 ## API Reference
