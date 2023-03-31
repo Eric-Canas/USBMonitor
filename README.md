@@ -39,6 +39,32 @@ Linux | Windows
 :---: | :---:
 ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
 
+Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected. 
+
+```python
+from usbmonitor import USBMonitor
+from usbmonitor.attributes import ID_MODEL, ID_MODEL_ID, ID_VENDOR_ID
+
+# Create the USBMonitor instance
+monitor = USBMonitor()
+
+# Get the current devices
+devices_dict = monitor.get_current_available_devices()
+
+# Print them
+for device_id, device_info in devices_dict.items():
+    print(f"{device_id} -- {device_info[ID_MODEL]} ({device_info[ID_MODEL_ID]} - {device_info[ID_VENDOR_ID]})")
+```
+Output
+```bash
+/dev/bus/usb/001/001 -- xHCI_Host_Controller (0002 - 1d6b)
+/dev/bus/usb/001/002 -- USB2.0_Hub (3431 - 2109)
+/dev/bus/usb/001/003 -- USB_Optical_Mouse (c077 - 046d)
+/dev/bus/usb/001/004 -- USB_Compliant_Keypad (9881 - 05a4)
+/dev/bus/usb/002/001 -- xHCI_Host_Controller (0003 - 1d6b)
+```
+
+
 
 ## API Reference
 
