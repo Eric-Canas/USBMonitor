@@ -35,6 +35,7 @@ monitor.start_monitoring(on_connect=on_connect, on_disconnect=on_disconnect)
 # If you don't need it anymore stop the daemon
 monitor.stop_monitoring()
 ```
+Output
 Linux | Windows
 :---: | :---:
 ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
@@ -103,3 +104,18 @@ Checks for any new connections or disconnections of USB devices since the last c
 - `update_last_check_devices`: **bool**. If `True` it will update the internal `USBMonitor.last_check_devices` attribute. So the next time you'll call this method, it will check for differences against the devices found in that current call. If `False` it won't update the `USBMonitor.last_check_devices` attribute. 
 
 ### Device Properties
+
+The `device_info` returned by most functions will contain the following information:
+
+Key | Value Description | Example
+:-- | :--- | :--
+`'ID_MODEL_ID'` | The product ID of the USB device, expressed as a string. | `'0892'`
+`'ID_MODEL'` | The name of the USB device model. | `'HD_Pro_Webcam_C920'`
+`'ID_MODEL_FROM_DATABASE'` | The name of the USB device model, retrieved from the device database. | `'OrbiCam'`
+`'ID_VENDOR'` | The name of the USB device vendor (sometimes the vendor ID). | `'046d'`
+`'ID_VENDOR_ID'` | The vendor ID of the USB device, expressed as a string. | `'046d'`
+`'ID_VENDOR_FROM_DATABASE'` | The name of the USB device vendor, retrieved from the device database. | `'Logitech, Inc.'`
+`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
+`'ID_USB_INTERFACES'` |	A tuple of strings representing the USB device's interfaces. | `('0e0100', '0e0200', '010100', '010200')`
+`'DEVTYPE'` | The type of the USB device, such as usb_device or usb_interface. | `'usb_device'`
+
