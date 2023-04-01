@@ -115,8 +115,8 @@ Key | Value Description | Example
 `'ID_VENDOR'` | The name of the USB device vendor | `'046d'`
 `'ID_VENDOR_ID'` | The vendor ID of the USB device. | `'046d'`
 `'ID_VENDOR_FROM_DATABASE'` | USB device vendor's name, from the device database. | `'Logitech, Inc.'`
-`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
 `'ID_USB_INTERFACES'` |	A `tuple` representing the USB device's interfaces. | `('0e0100', '0e0200', '010100', '010200')`
+`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
 `'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'`
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
