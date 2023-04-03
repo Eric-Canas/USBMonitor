@@ -129,5 +129,5 @@ Note that, depending on the device and the OS, some of this information may be i
 ## Roadmap
 
 - Accepting MacOS (As soon as I will have access to a MacOS system to test it out)
-
+- Include an attribute with an identifier to differentiate identical devices
 
