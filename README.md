@@ -112,72 +112,21 @@ Checks for any new connections or disconnections of USB devices since the last c
 
 The `device_info` returned by most functions will contain the following information:
 
-<table>
-  <thead>
-    <tr>
-      <th style="min-width:150px">Key</th>
-      <th style="min-width:400px">Value Description</th>
-      <th style="min-width:150px">Example (Linux)</th>
-      <th style="min-width:150px">Example (Windows)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>'ID_MODEL_ID'</code></td>
-      <td>The product ID of the USB device.</td>
-      <td><code>'0892'</code></td>
-      <td><code>'0892'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_MODEL'</code></td>
-      <td>The name of the USB device model.</td>
-      <td><code>'HD_Pro_Webcam_C920'</code></td>
-      <td><code>'HD Pro Webcam C920'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_MODEL_FROM_DATABASE'</code></td>
-      <td>Device model name, retrieved from the device database.</td>
-      <td><code>'OrbiCam'</code></td>
-      <td><code>'HD Pro Webcam C920'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_VENDOR'</code></td>
-      <td>The name of the USB device vendor.</td>
-      <td><code>'046d'</code></td>
-      <td><code>'HD Pro Webcam C920'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_VENDOR_ID'</code></td>
-      <td>The vendor ID of the USB device.</td>
-      <td><code>'046d'</code></td>
-      <td><code>'046d'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_VENDOR_FROM_DATABASE'</code></td>
-      <td>USB device vendor's name, from the device database.</td>
-      <td><code>'Logitech, Inc.'</code></td>
-      <td><code>'Logitech'</code></td>
-    </tr>
-    <tr>
-      <td><code>'ID_USB_INTERFACES'</code></td>
-      <td>A <code>tuple</code> representing the USB device's interfaces.</td>
-      <td><code>('0e0100', ...)</code></td>
-      <td><code>('USB\Class_0e', ...)</code></td>
-    </tr>
-    <tr>
-      <td><code>'DEVNAME'</code></td>
-      <td>The device name or path.</td>
-      <td><code>'/dev/bus/usb/001/003'</code></td>
-      <td><code>'...6&26FD4D64&1&0000'</code></td>
-    </tr>
-    <tr>
-      <td><code>'DEVTYPE'</code></td>
-      <td>Should always be <code>'usb_device'</code>.</td>
-      <td><code>'usb_device'</code></td>
-      <td><code>'USB'</code></td>
-    </tr>
-  </tbody>
-</table>
+Haru Kaeru - Eric Cañas
+I have this table in my github readme
+
+Key | Value Description | Example (Linux) | Example (Windows)
+:-- | :--- | :-- | :--
+`'ID_MODEL_ID'` | Product ID of the device. | `'0892'` | `'0892'`
+`'ID_MODEL'` | The name of the device model. | `'HD_Pro_Webcam_C920'` | `'HD Pro Webcam C920'`
+`'ID_MODEL_FROM_DATABASE'` | Device model, from the device database.| `'OrbiCam'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR'` | The name of the device vendor | `'046d'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR_ID'` | The vendor ID of the device. | `'046d'` | `'046d'`
+`'ID_VENDOR_FROM_DATABASE'` | Vendor's name, from the device database. | `'Logitech, Inc.'` | `'Logitech'`
+`'ID_USB_INTERFACES'` |	A `tuple` with the device's interfaces. | `('0e0100', ...)` | `('USB\\Class_0e', ...)`
+`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'` | `'...6&26FD4D64&1&0000'`
+`'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'` | `'USB'`
+
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
 
