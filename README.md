@@ -116,7 +116,7 @@ The `device_info` returned by most functions will contain the following informat
   <thead>
     <tr>
       <th style="min-width:150px">Key</th>
-      <th style="min-width:250px">Value Description</th>
+      <th style="min-width:400px">Value Description</th>
       <th style="min-width:150px">Example (Linux)</th>
       <th style="min-width:150px">Example (Windows)</th>
     </tr>
