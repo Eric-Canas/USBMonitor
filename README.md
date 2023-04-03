@@ -121,3 +121,8 @@ Key | Value Description | Example
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
 
+# Roadmap
+
+- Accepting MacOS (As soon as I will have access to a MacOS system to test it out)
+
+
