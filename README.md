@@ -38,7 +38,7 @@ monitor.stop_monitoring()
 Output
 Linux | Windows
 :---: | :---:
-![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
+<img src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif" alt="Linux USB Monitor" /> | <img src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif" alt="Windows USB Monitor" />
 
 Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected. 
 
