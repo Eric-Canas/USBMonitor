@@ -112,17 +112,17 @@ Checks for any new connections or disconnections of USB devices since the last c
 
 The `device_info` returned by most functions will contain the following information:
 
-Key | Value Description | Example
-:-- | :-- | :--
-`'ID_MODEL_ID'` | The product ID of the USB device. | `'0892'`
-`'ID_MODEL'` | The name of the USB device model. | `'HD_Pro_Webcam_C920'`
-`'ID_MODEL_FROM_DATABASE'` | Device model name, retrieved from the device database.| `'OrbiCam'`
-`'ID_VENDOR'` | The name of the USB device vendor | `'046d'`
-`'ID_VENDOR_ID'` | The vendor ID of the USB device. | `'046d'`
-`'ID_VENDOR_FROM_DATABASE'` | USB device vendor's name, from the device database. | `'Logitech, Inc.'`
-`'ID_USB_INTERFACES'` |	A `tuple` representing the USB device's interfaces. | `('0e0100', '0e0200', '010100', '010200')`
-`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
-`'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'`
+Key | Value Description | Example (Linux) | Example (Windows)
+:-- | :--- | :-- | :--
+`'ID_MODEL_ID'` | The product ID of the USB device. | `'0892'` | `'0892'`
+`'ID_MODEL'` | The name of the USB device model. | `'HD_Pro_Webcam_C920'` | `'HD Pro Webcam C920'`
+`'ID_MODEL_FROM_DATABASE'` | Device model name, retrieved from the device database.| `'OrbiCam'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR'` | The name of the USB device vendor | `'046d'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR_ID'` | The vendor ID of the USB device. | `'046d'` | `'046d'`
+`'ID_VENDOR_FROM_DATABASE'` | USB device vendor's name, from the device database. | `'Logitech, Inc.'` | `'Logitech'`
+`'ID_USB_INTERFACES'` |	A `tuple` representing the USB device's interfaces. | `('0e0100', ...)` | `('USB\\Class_0e', ...)`
+`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'` | `'USB\\VID_046D&PID_0892&MI_00\\6&26FD4D64&1&0000'`
+`'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'` | `'USB'`
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
 
