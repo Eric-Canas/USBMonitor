@@ -168,7 +168,7 @@ The `device_info` returned by most functions will contain the following informat
       <td><code>'DEVNAME'</code></td>
       <td>The device name or path.</td>
       <td><code>'/dev/bus/usb/001/003'</code></td>
-      <td><code>'USB\...\6&26FD4D64&1&0000'</code></td>
+      <td><code>'...6&26FD4D64&1&0000'</code></td>
     </tr>
     <tr>
       <td><code>'DEVTYPE'</code></td>
