@@ -36,9 +36,14 @@ monitor.start_monitoring(on_connect=on_connect, on_disconnect=on_disconnect)
 monitor.stop_monitoring()
 ```
 Output
+<div align="center">
+
 Linux | Windows
 :---: | :---:
 ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
+
+</div>
+
 
 Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected. 
 
