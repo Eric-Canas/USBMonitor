@@ -36,11 +36,20 @@ monitor.start_monitoring(on_connect=on_connect, on_disconnect=on_disconnect)
 monitor.stop_monitoring()
 ```
 Output
+<div align="center">
+
 Linux | Windows
 :---: | :---:
 ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
 
+<<<<<<< HEAD
 Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected.
+=======
+</div>
+
+
+Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected. 
+>>>>>>> 8e0030d1e280087f79b0e8f6b93cbe59d2464f23
 
 ```python
 from usbmonitor import USBMonitor
@@ -70,7 +79,7 @@ Output
 ## API Reference
 
 ### USBMonitor.start_monitoring(on_connect = None, on_disconnect = None, check_every_seconds = 0.5)
-Starts a daemon that continuously monitors the connected USB devices in order to detect new connections or disconnections. When a device is disconnected, the `on_disconnect` callback function is invoked with the Device ID as the first argument and the [dictionary of device information](#device-properties) as the second argument. Similarly, when a new device is connected, the `on_connect` callback function is called with the same arguments. This allows developers to promptly respond to any changes in the connected USB devices and perform necessary actions.
+Starts a daemon that continuously monitors the connected USB devices in order to detect new connections or disconnections. When a device is disconnected, the `on_disconnect` callback function is invoked with the Device ID ([`devname`](#device-properties)) as the first argument and the [dictionary of device information](#device-properties) as the second argument. Similarly, when a new device is connected, the `on_connect` callback function is called with the same arguments. This allows developers to promptly respond to any changes in the connected USB devices and perform necessary actions.
 
 - `on_connect`: **callable | None**. The function to call every time a device is **added**. It is expected to have the following format `on_connect(device_id: str, device_info: dict[str, dict[str, str|tuple[str, ...]]])`
 - `on_disconnect`: **callable | None**. The function to call every time a device is **removed**. It is expected to have the following format `on_disconnect(device_id: str, device_info: dict[str, dict[str, str|tuple[str, ...]]])`
@@ -83,14 +92,18 @@ Stops the monitoring of USB devices. This function will **stop** the daemon laun
 
 
 ### USBMonitor.get_available_devices()
+<<<<<<< HEAD
 Returns a dictionary of the currently available devices, where the key is the `Device ID` and the value is a [dictionary containing the device's information](#device-properties). All the keys of this dictionary can be found at `attributes.DEVICE_ATTRIBUTES`. They always correspond with the default Linux device properties (independently of the OS where the library is running).
+=======
+Returns a dictionary of the currently available devices, where the key is the `Device ID` ([`devname`](#device-properties)) and the value is a [dictionary containing the device's information](#device-properties). All the keys of this dictionary can be found at `attributes.DEVICE_ATTRIBUTES`. They always correspond with the default Linux device properties (independently of the OS where the library is running).
+>>>>>>> 8e0030d1e280087f79b0e8f6b93cbe59d2464f23
 
 - Returns: **dict[str, dict[str, str|tuple[str, ...]]]**: A dictionary containing the currently available devices. All values are strings except for `ID_USB_INTERFACES`, which is a `tuple` of `string`
 
 
 
 ### USBMonitor.changes_from_last_check(update_last_check_devices = True)
-Returns a tuple of two dictionaries, one containing the devices that have been *removed* since the last check, and another one containing the devices that have been *added*. Both dictionaries will have the `Device ID` as key and all the device information as value. Remember that all the [keys of this dictionary](#device-properties) can be found at can be found at `attributes.DEVICE_ATTRIBUTES`.
+Returns a tuple of two dictionaries, one containing the devices that have been *removed* since the last check, and another one containing the devices that have been *added*. Both dictionaries will have the `Device ID` ([`devname`](#device-properties)) as key and all the device information as value. Remember that all the [keys of this dictionary](#device-properties) can be found at can be found at `attributes.DEVICE_ATTRIBUTES`.
 
 - `update_last_check_devices`: **bool**. If `True` it will update the internal `USBMonitor.last_check_devices` attribute. So the next time you'll call this method, it will check for differences against the devices found in that current call. If `False` it won't update the `USBMonitor.last_check_devices` attribute. 
 
@@ -107,22 +120,26 @@ Checks for any new connections or disconnections of USB devices since the last c
 
 The `device_info` returned by most functions will contain the following information:
 
-Key | Value Description | Example
-:-- | :-- | :--
-`'ID_MODEL_ID'` | The product ID of the USB device. | `'0892'`
-`'ID_MODEL'` | The name of the USB device model. | `'HD_Pro_Webcam_C920'`
-`'ID_MODEL_FROM_DATABASE'` | Device model name, retrieved from the device database.| `'OrbiCam'`
-`'ID_VENDOR'` | The name of the USB device vendor | `'046d'`
-`'ID_VENDOR_ID'` | The vendor ID of the USB device. | `'046d'`
-`'ID_VENDOR_FROM_DATABASE'` | USB device vendor's name, from the device database. | `'Logitech, Inc.'`
-`'ID_USB_INTERFACES'` |	A `tuple` representing the USB device's interfaces. | `('0e0100', '0e0200', '010100', '010200')`
-`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
-`'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'`
+Haru Kaeru - Eric Cañas
+I have this table in my github readme
+
+Key | Value Description | Example (Linux) | Example (Windows)
+:-- | :--- | :-- | :--
+`'ID_MODEL_ID'` | Product ID of the device. | `'0892'` | `'0892'`
+`'ID_MODEL'` | The name of the device model. | `'HD_Pro_Webcam_C920'` | `'HD Pro Webcam C920'`
+`'ID_MODEL_FROM_DATABASE'` | Device model, from the device database.| `'OrbiCam'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR'` | The name of the device vendor | `'046d'` | `'HD Pro Webcam C920'`
+`'ID_VENDOR_ID'` | The vendor ID of the device. | `'046d'` | `'046d'`
+`'ID_VENDOR_FROM_DATABASE'` | Vendor's name, from the device database. | `'Logitech, Inc.'` | `'Logitech'`
+`'ID_USB_INTERFACES'` |	A `tuple` with the device's interfaces. | `('0e0100', ...)` | `('USB\\Class_0e', ...)`
+`'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'` | `'...6&26FD4D64&1&0000'`
+`'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'` | `'USB'`
+
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
 
 ## Roadmap
 
 - Accepting MacOS (As soon as I will have access to a MacOS system to test it out)
-
+- Include an attribute with an identifier to differentiate identical devices
 
