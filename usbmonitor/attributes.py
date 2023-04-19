@@ -1,6 +1,6 @@
 """
 device_info dictionary attributes. Same attributes as Linux udev (independently of the OS where the library is running).
-All these attributes are the keys of the device_info dictionary returned by the `get_current_available_devices` method.
+All these attributes are the keys of the device_info dictionary returned by the `get_available_devices` method.
 The expected values of these attributes are all strings, except for the `ID_USB_INTERFACES` attribute, which is a tuple.
 
 Author: Eric-Canas
@@ -24,5 +24,5 @@ ID_MODEL_FROM_DATABASE = 'ID_MODEL_FROM_DATABASE'
 DEVNAME = 'DEVNAME'
 DEVTYPE = 'DEVTYPE'
 
-DEVICE_ATTRIBUTES = (ID_MODEL_ID, ID_VENDOR, ID_VENDOR_ID, ID_MODEL, ID_VENDOR_FROM_DATABASE, ID_MODEL_FROM_DATABASE, DEVNAME,
-                     ID_USB_CLASS_FROM_DATABASE, ID_USB_INTERFACES, DEVTYPE)
+DEVICE_ATTRIBUTES = (ID_MODEL_ID, ID_MODEL, ID_MODEL_FROM_DATABASE, ID_VENDOR, ID_VENDOR_ID, ID_VENDOR_FROM_DATABASE,
+                     ID_USB_INTERFACES, ID_USB_CLASS_FROM_DATABASE, DEVNAME, DEVTYPE)

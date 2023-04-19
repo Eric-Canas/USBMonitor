@@ -24,7 +24,7 @@ class _USBDetectorBase(ABC):
         self._stop_thread = threading.Event()
         self.lock = threading.Lock()
 
-        self.on_start_devices = self.get_current_available_devices()
+        self.on_start_devices = self.get_available_devices()
         self.last_check_devices = self.on_start_devices.copy()
 
     def changes_from_last_check(self, update_last_check_devices: bool = True) -> tuple[dict[str, str], dict[str, str]]:
@@ -35,7 +35,7 @@ class _USBDetectorBase(ABC):
         :return: tuple[dict[str, str], dict[str, str]]. The first tuple contains the information of the devices that
                 were removed, the second tuple contains the information of the new devices that were added.
         """
-        current_devices, prev_devices = self.get_current_available_devices(), self.last_check_devices
+        current_devices, prev_devices = self.get_available_devices(), self.last_check_devices
         # Get the difference between the current devices and the previous ones
         removed_devices = {_id: _info for _id, _info in prev_devices.items() if _id not in current_devices}
         added_devices = {_id: _info for _id, _info in current_devices.items() if _id not in prev_devices}
@@ -45,7 +45,7 @@ class _USBDetectorBase(ABC):
         return removed_devices, added_devices
 
     @abstractmethod
-    def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
+    def get_available_devices(self) -> dict[str, dict[str, str | tuple[str, ...]]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.

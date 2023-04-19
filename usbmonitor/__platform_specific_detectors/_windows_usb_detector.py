@@ -27,7 +27,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         # CONSTANTS
         super(_WindowsUSBDetector, self).__init__()
 
-    def get_current_available_devices(self) -> dict[str, dict[str, str]]:
+    def get_available_devices(self) -> dict[str, dict[str, str]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.

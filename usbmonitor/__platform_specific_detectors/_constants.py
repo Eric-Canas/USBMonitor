@@ -18,14 +18,14 @@ _DEVICE_ID, _PNP_DEVICE_ID = 'DeviceID', 'PNPDeviceID'
 
 _LINUX_TO_WINDOWS_ATTRIBUTES = {
     ID_MODEL_ID: 'HardwareID',
+    ID_MODEL: 'Name',
+    ID_MODEL_FROM_DATABASE: 'Caption',
     ID_VENDOR_ID: 'HardwareID',
     ID_VENDOR: 'Name',
-    ID_MODEL: 'Name',
     ID_VENDOR_FROM_DATABASE: 'Manufacturer',#'Description',
-    ID_MODEL_FROM_DATABASE: 'Caption',
-    DEVNAME: _DEVICE_ID,
-    ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
     ID_USB_INTERFACES: 'CompatibleID',
+    ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
+    DEVNAME: _DEVICE_ID,
     DEVTYPE: _PNP_DEVICE_ID,
 }
 

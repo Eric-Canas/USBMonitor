@@ -25,7 +25,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
         self.monitor = None
         super(_LinuxUSBDetector, self).__init__()
 
-    def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
+    def get_available_devices(self) -> dict[str, dict[str, str | tuple[str, ...]]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.
@@ -68,11 +68,11 @@ class _LinuxUSBDetector(_USBDetectorBase):
                     device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
                     device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
                     on_connect(device_id, device_info)
-                    self.last_check_devices = self.get_current_available_devices()
+                    self.last_check_devices = self.get_available_devices()
                 elif action == "remove" and on_disconnect is not None:
                     device_info = self.last_check_devices[device_id].copy()
                     on_disconnect(device_id, device_info)
-                    self.last_check_devices = self.get_current_available_devices()
+                    self.last_check_devices = self.get_available_devices()
 
         if self.monitor is None:
             self.monitor = pyudev.Monitor.from_netlink(self.context)

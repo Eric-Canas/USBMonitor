@@ -40,7 +40,7 @@ Linux | Windows
 :---: | :---:
 ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/linux_monitor.gif) | ![](https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/windows_monitor.gif)
 
-Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected. 
+Sometimes, when initializing your software, you may seek to confirm which USB devices are indeed connected.
 
 ```python
 from usbmonitor import USBMonitor
@@ -50,7 +50,7 @@ from usbmonitor.attributes import ID_MODEL, ID_MODEL_ID, ID_VENDOR_ID
 monitor = USBMonitor()
 
 # Get the current devices
-devices_dict = monitor.get_current_available_devices()
+devices_dict = monitor.get_available_devices()
 
 # Print them
 for device_id, device_info in devices_dict.items():
@@ -82,7 +82,7 @@ Stops the monitoring of USB devices. This function will **stop** the daemon laun
 - `warn_if_was_stopped`: **bool**. If set to `True`, this function will issue a warning if the monitoring of USB devices was already stopped (the daemon was not running).
 
 
-### USBMonitor.get_current_available_devices()
+### USBMonitor.get_available_devices()
 Returns a dictionary of the currently available devices, where the key is the `Device ID` and the value is a [dictionary containing the device's information](#device-properties). All the keys of this dictionary can be found at `attributes.DEVICE_ATTRIBUTES`. They always correspond with the default Linux device properties (independently of the OS where the library is running).
 
 - Returns: **dict[str, dict[str, str|tuple[str, ...]]]**: A dictionary containing the currently available devices. All values are strings except for `ID_USB_INTERFACES`, which is a `tuple` of `string`

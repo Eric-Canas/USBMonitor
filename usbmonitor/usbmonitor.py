@@ -30,7 +30,7 @@ class USBMonitor:
             raise NotImplementedError(f"Your OS is not supported: {sys.platform}")
 
 
-    def get_current_available_devices(self) -> dict[str, dict[str, str|tuple[str, ...]]]:
+    def get_available_devices(self) -> dict[str, dict[str, str | tuple[str, ...]]]:
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information. These keys IDs can be found at attributes.DEVICE_ATTRIBUTES. They
@@ -39,7 +39,7 @@ class USBMonitor:
         :return: dict[str, dict[str, str|tuple[str, ...]]]. The key is the device ID, the value is a dictionary of the device's
                 information.
         """
-        return self.monitor.get_current_available_devices()
+        return self.monitor.get_available_devices()
 
     def check_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
                       update_last_check_devices: bool = True) -> None:
