@@ -71,6 +71,8 @@ Output
 
 ### USBMonitor(filter_devices = None)
 
+Initialize the USBMonitor instance. It will allow to inspect and monitor connected devices
+
 - `filter_devices`: **tuple[dict[str, str]] | None**. A tuple of dictionaries containing the device attributes to filter. If passed, it will only return and monitor devices that match any of the specified filters. For example, if you want to only retrieve and track devices with 'ID_VENDOR_FROM_DATABASE' = 'Realtek' or the device with 'ID_VENDOR_ID' = '1234' and 'ID_MODEL_ID' = '1A2B' you should pass: ({'ID_VENDOR_FROM_DATABASE': 'Realtek'}, {'ID_VENDOR_ID': '1234', 'ID_MODEL_ID': '1A2B'}). Default value is None.
 
 ### USBMonitor.start_monitoring(on_connect = None, on_disconnect = None, check_every_seconds = 0.5)
