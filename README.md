@@ -69,6 +69,10 @@ Output
 
 ## API Reference
 
+### USBMonitor(filter_devices = None)
+
+- `filter_devices`: **tuple[dict[str, str]] | None**. A tuple of dictionaries containing the device attributes to filter. If passed, it will only return and monitor devices that match any of the specified filters. For example, if you want to only retrieve and track devices with 'ID_VENDOR_FROM_DATABASE' = 'Realtek' or the device with 'ID_VENDOR_ID' = '1234' and 'ID_MODEL_ID' = '1A2B' you should pass: ({'ID_VENDOR_FROM_DATABASE': 'Realtek'}, {'ID_VENDOR_ID': '1234', 'ID_MODEL_ID': '1A2B'}). Default value is None.
+
 ### USBMonitor.start_monitoring(on_connect = None, on_disconnect = None, check_every_seconds = 0.5)
 Starts a daemon that continuously monitors the connected USB devices in order to detect new connections or disconnections. When a device is disconnected, the `on_disconnect` callback function is invoked with the Device ID as the first argument and the [dictionary of device information](#device-properties) as the second argument. Similarly, when a new device is connected, the `on_connect` callback function is called with the same arguments. This allows developers to promptly respond to any changes in the connected USB devices and perform necessary actions.
 

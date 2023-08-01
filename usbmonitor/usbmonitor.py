@@ -17,13 +17,22 @@ import sys
 
 
 class USBMonitor:
-    def __init__(self):
+    def __init__(self, filter_devices: list[dict[str, str]] | tuple[dict[str, str]] | None = None):
+        """
+        Creates a new USBMonitor object. This object can be used to monitor USB devices connected to the system.
+
+        :param filter_devices: list[dict[str, str]] | tuple[dict[str, str]] | None. A list of dictionaries containing
+        the device information to filter the devices by. If None, no filtering will be done. The dictionaries
+        must contain the same keys as the dictionaries returned by the `get_available_devices` method.
+        For example, if you want to only monitor devices with ID_MODEL_ID = "A2B2" or "ABCD" you could pass
+        filter_devices=({"ID_MODEL_ID": "A2B2"}, {"ID_MODEL_ID": "ABCD"}).
+        """
         if sys.platform.startswith('linux'):
             from .__platform_specific_detectors._linux_usb_detector import _LinuxUSBDetector
-            self.monitor = _LinuxUSBDetector()
+            self.monitor = _LinuxUSBDetector(filter_devices=filter_devices)
         elif sys.platform.startswith('win'):
             from .__platform_specific_detectors._windows_usb_detector import _WindowsUSBDetector
-            self.monitor = _WindowsUSBDetector()
+            self.monitor = _WindowsUSBDetector(filter_devices=filter_devices)
         elif sys.platform.startswith('darwin'):
             raise NotImplementedError("MacOS is not supported yet")
         else:

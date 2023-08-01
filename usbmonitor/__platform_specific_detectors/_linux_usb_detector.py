@@ -19,11 +19,11 @@ from ._usb_detector_base import _USBDetectorBase
 
 
 class _LinuxUSBDetector(_USBDetectorBase):
-    def __init__(self):
+    def __init__(self, filter_devices: list[dict[str, str]] | tuple[dict[str, str]] | None = None):
         import pyudev
         self.context = pyudev.Context()
         self.monitor = None
-        super(_LinuxUSBDetector, self).__init__()
+        super(_LinuxUSBDetector, self).__init__(filter_devices=filter_devices)
 
     def get_available_devices(self) -> dict[str, dict[str, str | tuple[str, ...]]]:
         """
@@ -39,6 +39,9 @@ class _LinuxUSBDetector(_USBDetectorBase):
             device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
             device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
             devices_info[device_id] = device_info
+
+        if self.filter_devices is not None:
+            devices_info = self._apply_devices_filter(devices=devices_info)
 
         return devices_info
 

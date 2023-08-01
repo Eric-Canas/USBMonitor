@@ -24,10 +24,10 @@ from ._usb_detector_base import _USBDetectorBase
 
 
 class _WindowsUSBDetector(_USBDetectorBase):
-    def __init__(self):
+    def __init__(self, filter_devices: list[dict[str, str]] | tuple[dict[str, str]] | None = None):
         self._wmi_interface = None
         # CONSTANTS
-        super(_WindowsUSBDetector, self).__init__()
+        super(_WindowsUSBDetector, self).__init__(filter_devices=filter_devices)
 
     def get_available_devices(self) -> dict[str, dict[str, str]]:
         """
@@ -44,6 +44,8 @@ class _WindowsUSBDetector(_USBDetectorBase):
                     for device in devices}
         devices = self.__filter_devices(devices=devices)
         devices = self.__finetune_incompatible_attributes(devices=devices)
+        if self.filter_devices is not None:
+            devices = self._apply_devices_filter(devices=devices)
         return devices
 
     def _monitor_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
@@ -79,7 +81,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         """
         for device_id, device_info in devices.items():
             driver_type = self.__get_driver_type_from_device_id(device_id=device_id)
-            new_attributes = {attribute: self.__apply_regex(device_info[attribute], regex)
+            new_attributes = {attribute: self.__apply_regex(value=device_id, regex=regex)#device_info[attribute], regex)
                               for attribute, regex in _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER[driver_type].items()
                               if attribute in device_info}
             device_info.update(new_attributes)

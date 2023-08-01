@@ -19,10 +19,26 @@ from abc import ABC, abstractmethod
 from ._constants import _SECONDS_BETWEEN_CHECKS
 
 class _USBDetectorBase(ABC):
-    def __init__(self):
+    def __init__(self, filter_devices: list[dict[str, str]] | tuple[dict[str, str]] = None):
+        """
+        Initializes the _USBDetectorBase class.
+
+        :param filter_devices: list[dict[str, str]] | tuple[dict[str, str]] | None. A list of dictionaries containing
+        the device information to filter the devices by. If None, no filtering will be done. The dictionaries
+        must contain the same keys as the dictionaries returned by the `get_available_devices` method.
+        For example, if you want to only monitor devices with ID_MODEL_ID = "A2B2" or "ABCD" you could pass
+        filter_devices=({"ID_MODEL_ID": "A2B2"}, {"ID_MODEL_ID": "ABCD"}).
+        """
         self._thread = None
+        self.filter_devices = filter_devices
         self._stop_thread = threading.Event()
         self.lock = threading.Lock()
+
+        if filter_devices is not None:
+            assert isinstance(filter_devices, (list, tuple)), f"filter_devices must be a list or a tuple of dicts " \
+                                                              f"(or None). Got {type(filter_devices)}"
+            assert all(isinstance(device, dict) for device in filter_devices), f"filter_devices must contain dicts. " \
+                                                                f"Got {set(type(device) for device in filter_devices)}"
 
         self.on_start_devices = self.get_available_devices()
         self.last_check_devices = self.on_start_devices.copy()
@@ -49,10 +65,29 @@ class _USBDetectorBase(ABC):
         """
         Returns a dictionary of the currently available devices, where the key is the device ID and the value is a
         dictionary of the device's information.
+
         :return: dict[str, dict[str, str|tuple[str, ...]]. The key is the device ID, the value is a dictionary of the device's
                 information.
         """
         raise NotImplementedError("This method must be implemented in the child class")
+
+    def _apply_devices_filter(self, devices: dict[str, dict[str, str | tuple[str, ...]]]) -> dict[str, dict[str, str | tuple[str, ...]]]:
+        """
+        Filters the devices by the given filters. Only devices that match all the filters in any of the dictionaries
+        will be returned.
+        :param devices: dict[str, dict[str, str|tuple[str, ...]]]. The devices to filter. Returned by the
+                `get_available_devices` method.
+        :return: dict[str, dict[str, str|tuple[str, ...]]]. The input devices that matches any of the given filters
+        """
+        # Copy the dict to avoid allow iteration while modifying the original dict
+        for device_id, device_info in devices.copy().items():
+            # Iterate over each filter dict
+            for filter_dict in self.filter_devices:
+                if all(device_info[key] == value for key, value in filter_dict.items()):
+                    break
+            else:
+                devices.pop(device_id)
+        return devices
 
     def check_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
                       update_last_check_devices: bool = True) -> None:
@@ -85,6 +120,7 @@ class _USBDetectorBase(ABC):
                 arguments, the device ID and the device information. on_connect(device_id: str, device_info: dict[str, str])
         :param on_disconnect: callable | None. The function to call when a device is removed. It is expected to receive
                 two arguments, the device ID and the device information. on_disconnect(device_id: str, device_info: dict[str, str])
+
         :param check_every_seconds: int | float. The number of seconds to wait between each check for changes in the
                 USB devices. Defaults to 0.5 seconds.
         """
@@ -95,7 +131,7 @@ class _USBDetectorBase(ABC):
         self._thread.start()
 
     def _monitor_changes(self, on_connect: callable | None = None, on_disconnect: callable | None = None,
-                         check_every_seconds: int | float = _SECONDS_BETWEEN_CHECKS) -> None:
+                             check_every_seconds: int | float = _SECONDS_BETWEEN_CHECKS) -> None:
         """
         Monitors the USB devices. This function should ALWAYS be called from a background thread.
         :param on_connect: callable | None. The function to call when a device is added. It is expected to receive two

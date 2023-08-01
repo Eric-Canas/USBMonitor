@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='usb-monitor',
-    version='1.13',
+    version='1.14',
     author='Eric-Canas',
     author_email='eric@ericcanas.com',
     url='https://github.com/Eric-Canas/USBMonitor',
