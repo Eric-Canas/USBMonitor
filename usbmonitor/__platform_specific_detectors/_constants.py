@@ -35,7 +35,7 @@ USB, USBSTOR = 'USB', 'USBSTOR'
 
 _WINDOWS_USB_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR_ID: r'VID_([0-9A-Fa-f]{4})',
                                  DEVTYPE: r'^(.+?)\\'}
-_WINDOWS_USBSTOR_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PROD_([a-zA-Z0-9\.\_\-]{2,16})&', ID_VENDOR_ID: r'VEN_([a-zA-Z0-9\.\_\-]{2,8})&',
+_WINDOWS_USBSTOR_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PROD_([a-zA-Z0-9\_\/\.\-]{2,16})&', ID_VENDOR_ID: r'VEN_([a-zA-Z0-9\.\_\-\/]{2,8})&',
                                  DEVTYPE: r'^(.+?)\\'}
 _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER = {USB: _WINDOWS_USB_REGEX_ATTRIBUTES,
                                         USBSTOR: _WINDOWS_USBSTOR_REGEX_ATTRIBUTES}
