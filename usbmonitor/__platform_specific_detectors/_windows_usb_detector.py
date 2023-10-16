@@ -81,7 +81,9 @@ class _WindowsUSBDetector(_USBDetectorBase):
         """
         for device_id, device_info in devices.items():
             driver_type = self.__get_driver_type_from_device_id(device_id=device_id)
-            new_attributes = {attribute: self.__apply_regex(value=device_id, regex=regex)#device_info[attribute], regex)
+            if driver_type is None:
+                continue
+            new_attributes = {attribute: self.__apply_regex(value=device_id, regex=regex)  #device_info[attribute], regex)
                               for attribute, regex in _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER[driver_type].items()
                               if attribute in device_info}
             device_info.update(new_attributes)
@@ -111,7 +113,7 @@ class _WindowsUSBDetector(_USBDetectorBase):
         assert all(value == values_found[0] for value in values_found), "The values found are not all the same"
         return values_found[0]
 
-    def __get_driver_type_from_device_id(self, device_id: str) -> str:
+    def __get_driver_type_from_device_id(self, device_id: str) -> str | None:
         """
         Returns the driver type from the device ID.
         :param device_id: str. The device ID.
@@ -120,8 +122,8 @@ class _WindowsUSBDetector(_USBDetectorBase):
         device_splitted_info = device_id.split('\\')
         assert len(device_splitted_info) >= 1, f"The device ID '{device_id}' is not valid"
         driver_type = device_splitted_info[0]
-        assert driver_type in _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER, f"The driver type '{driver_type}' is not supported " \
-                                                                   f"yet, please create an issue in github"
+        if driver_type not in _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER:
+            return None
         return driver_type
 
     def __create_wmi_interface(self):
