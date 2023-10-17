@@ -31,17 +31,20 @@ _LINUX_TO_WINDOWS_ATTRIBUTES = {
 
 _LINUX_TUPLE_ATTRIBUTES_SEPARATORS = {ID_USB_INTERFACES: ':'}
 
-USB, USBSTOR = 'USB', 'USBSTOR'
+USB, USBSTOR, USB4 = 'USB', 'USBSTOR', 'USB4'
 
 _WINDOWS_USB_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR_ID: r'VID_([0-9A-Fa-f]{4})',
                                  DEVTYPE: r'^(.+?)\\'}
+_WINDOWS_USB4_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR_ID: r'VID_([0-9A-Fa-f]{4})',
+                                  DEVTYPE: r'^(.+?)\\'}
 _WINDOWS_USBSTOR_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PROD_([a-zA-Z0-9\_\/\.\-]{2,16})&', ID_VENDOR_ID: r'VEN_([a-zA-Z0-9\.\_\-\/]{2,8})&',
-                                 DEVTYPE: r'^(.+?)\\'}
-_WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER = {USB: _WINDOWS_USB_REGEX_ATTRIBUTES,
-                                        USBSTOR: _WINDOWS_USBSTOR_REGEX_ATTRIBUTES}
+                                     DEVTYPE: r'^(.+?)\\'}
 
+_WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER = {USB: _WINDOWS_USB_REGEX_ATTRIBUTES,
+                                       USBSTOR: _WINDOWS_USBSTOR_REGEX_ATTRIBUTES,
+                                       USB4: _WINDOWS_USB4_REGEX_ATTRIBUTES}
 
 _WINDOWS_TO_LOWERCASE_ATTRIBUTES = (ID_MODEL_ID, ID_VENDOR_ID)
-_WINDOWS_NON_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30")
+_WINDOWS_NON_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30", "VIRTUAL_POWER_PDO")
 _WINDOWS_USB_QUERY = f"SELECT {', '.join(set(_LINUX_TO_WINDOWS_ATTRIBUTES.values()))} FROM Win32_PnPEntity " \
                           f"WHERE {_PNP_DEVICE_ID} LIKE 'USB%'"
