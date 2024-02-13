@@ -125,7 +125,7 @@ class _USBDetectorBase(ABC):
                 USB devices. Defaults to 0.5 seconds.
         """
         assert self._thread is None, "The USB monitor is already running"
-        self._thread = threading.Thread(target=self._monitor_changes,
+        self._thread = threading.Thread(name="USB Monitor", target=self._monitor_changes,
                                         args=(on_connect, on_disconnect, check_every_seconds),
                                         daemon=True)
         self._thread.start()

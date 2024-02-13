@@ -72,7 +72,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
                     device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
                     on_connect(device_id, device_info)
                     self.last_check_devices = self.get_available_devices()
-                elif action == "remove" and on_disconnect is not None:
+                elif action == "remove" and on_disconnect is not None and device_id in self.last_check_devices:
                     device_info = self.last_check_devices[device_id].copy()
                     on_disconnect(device_id, device_info)
                     self.last_check_devices = self.get_available_devices()
@@ -81,7 +81,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
             self.monitor = pyudev.Monitor.from_netlink(self.context)
             self.monitor.filter_by(subsystem='usb')
 
-        self._thread = pyudev.MonitorObserver(self.monitor, callback=__handle_device_event)
+        self._thread = pyudev.MonitorObserver(self.monitor, name="USB Monitor", callback=__handle_device_event)
 
         # Start the observer thread
         self._thread.start()
