@@ -72,7 +72,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
                     device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
                     on_connect(device_id, device_info)
                     self.last_check_devices = self.get_available_devices()
-                elif action == "remove" and on_disconnect is not None:
+                elif action == "remove" and on_disconnect is not None and device_id in self.last_check_devices:
                     device_info = self.last_check_devices[device_id].copy()
                     on_disconnect(device_id, device_info)
                     self.last_check_devices = self.get_available_devices()
