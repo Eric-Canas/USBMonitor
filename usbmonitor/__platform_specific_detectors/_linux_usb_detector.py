@@ -81,7 +81,7 @@ class _LinuxUSBDetector(_USBDetectorBase):
             self.monitor = pyudev.Monitor.from_netlink(self.context)
             self.monitor.filter_by(subsystem='usb')
 
-        self._thread = pyudev.MonitorObserver(self.monitor, callback=__handle_device_event)
+        self._thread = pyudev.MonitorObserver(self.monitor, name="USB Monitor", callback=__handle_device_event)
 
         # Start the observer thread
         self._thread.start()
