@@ -2,3 +2,5 @@
 *.pyc
 dist/
 usb_monitor.egg-info/
+pypi_token.txt
+build/
