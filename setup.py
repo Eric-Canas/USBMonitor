@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='usb-monitor',
-    version='1.17',
+    version='1.18',
     author='Eric-Canas',
     author_email='eric@ericcanas.com',
     url='https://github.com/Eric-Canas/USBMonitor',
     description='USBMonitor is an easy-to-use cross-platform library for USB device monitoring that simplifies '
-                'tracking of connections, disconnections, and examination of connected device attributes on both '
-                'Windows and Linux, freeing the user from platform-specific details or incompatibilities.',
+                'tracking of connections, disconnections, and examination of connected device attributes on '
+                'Windows, Linux and MacOs, freeing the user from platform-specific details or incompatibilities.',
 
     long_description=open('README.md', 'r').read(),
     long_description_content_type='text/markdown',

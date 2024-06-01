@@ -22,7 +22,7 @@ _LINUX_TO_WINDOWS_ATTRIBUTES = {
     ID_MODEL_FROM_DATABASE: 'Caption',
     ID_VENDOR_ID: 'HardwareID',
     ID_VENDOR: 'Name',
-    ID_VENDOR_FROM_DATABASE: 'Manufacturer',#'Description',
+    ID_VENDOR_FROM_DATABASE: 'Manufacturer',
     ID_USB_INTERFACES: 'CompatibleID',
     ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
     DEVNAME: _DEVICE_ID,
@@ -48,3 +48,22 @@ _WINDOWS_TO_LOWERCASE_ATTRIBUTES = (ID_MODEL_ID, ID_VENDOR_ID)
 _WINDOWS_NON_USB_DEVICES_IDS = ("ROOT_HUB20", "ROOT_HUB30", "VIRTUAL_POWER_PDO")
 _WINDOWS_USB_QUERY = f"SELECT {', '.join(set(_LINUX_TO_WINDOWS_ATTRIBUTES.values()))} FROM Win32_PnPEntity " \
                           f"WHERE {_PNP_DEVICE_ID} LIKE 'USB%'"
+
+# Darwin-specific constants
+_DARWIN_TO_LINUX_ATTRIBUTES = {
+    ID_MODEL_ID: 'idProduct',
+    ID_MODEL: 'kUSBProductString',
+    ID_MODEL_FROM_DATABASE: 'USB Product Name',
+    ID_VENDOR_ID: 'idVendor',
+    ID_VENDOR: 'kUSBVendorString',
+    ID_VENDOR_FROM_DATABASE: 'USB Vendor Name',
+    ID_USB_INTERFACES: 'IOCFPlugInTypes',
+    ID_USB_CLASS_FROM_DATABASE: 'bDeviceClass',
+    DEVNAME: 'BSD Name',
+    DEVTYPE: 'Device Speed',
+}
+
+_DARWIN_REGEX_ATTRIBUTES = {
+    ID_MODEL_ID: r'idProduct: ([0-9A-Fa-f]{4})',
+    ID_VENDOR_ID: r'idVendor: ([0-9A-Fa-f]{4})'
+}

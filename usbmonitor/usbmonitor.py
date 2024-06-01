@@ -34,7 +34,8 @@ class USBMonitor:
             from .__platform_specific_detectors._windows_usb_detector import _WindowsUSBDetector
             self.monitor = _WindowsUSBDetector(filter_devices=filter_devices)
         elif sys.platform.startswith('darwin'):
-            raise NotImplementedError("MacOS is not supported yet")
+            from .__platform_specific_detectors._darwin_usb_detector import _DarwinUSBDetector
+            self.monitor = _DarwinUSBDetector(filter_devices=filter_devices)
         else:
             raise NotImplementedError(f"Your OS is not supported: {sys.platform}")
 
