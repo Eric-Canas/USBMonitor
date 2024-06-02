@@ -1,9 +1,9 @@
 # USBMonitor
-<img alt="USBMonitor" title="USBMonitor" src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/logo.png" width="20%" align="left"> **USBMonitor** is a versatile **cross-platform** library that simplifies **USB device monitoring** for both _Windows_ and _Linux_ systems. It enables developers to effortlessly track device **connections**, **disconnections**, and access to all connected device **attributes**.
+<img alt="USBMonitor" title="USBMonitor" src="https://raw.githubusercontent.com/Eric-Canas/USBMonitor/main/resources/logo.png" width="20%" align="left"> **USBMonitor** is a versatile **cross-platform** library that simplifies **USB device monitoring** for _Windows_, _Linux_ and _MacOS_ systems. It enables developers to effortlessly track device **connections**, **disconnections**, and access to all connected device **attributes**.
 
 With **USBMonitor**, developers can stay up-to-date with any changes in the connected USB devices, allowing them to **trigger specific actions** whenever a USB device is connected or disconnected. By ensuring **consistent functionality across various operating systems**, **USBMonitor** removes the need to address platform-specific quirks, inconsistencies, or incompatibilities, resulting in a smooth and efficient USB device management experience. The uniformity in functionality significantly enhances **code compatibility**, minimizing the risk of **code issues** or **unexpected breaks** when moving between platforms.
 
-At its core, **USBMonitor** utilizes <a href="https://pyudev.readthedocs.io/en/latest/" target="_blank">pyudev</a> (for Linux environments) and <a href="https://github.com/mhammond/pywin32" target="_blank">WMI</a> (for Windows environments), handling all the low-level intricacies and translating OS-specific information to ensure consistency across both systems.
+At its core, **USBMonitor** utilizes <a href="https://pyudev.readthedocs.io/en/latest/" target="_blank">pyudev</a> (for Linux environments), <a href="https://github.com/mhammond/pywin32" target="_blank">WMI</a> (for Windows environments), and the <a href="https://developer.apple.com/library/archive/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/TheRegistry/TheRegistry.html" target="_blank"> I/O Registry</a> (for MacOs environments). Handling all the low-level intricacies and translating OS-specific information to ensure consistency across all systems.
 
 ## Installation
 To install **USBMonitor**, simply run:
@@ -126,8 +126,3 @@ Key | Value Description | Example
 `'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'`
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
-
-## Roadmap
-
-- Accepting MacOS (As soon as I will have access to a MacOS system to test it out)
-
