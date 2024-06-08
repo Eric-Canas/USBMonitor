@@ -89,3 +89,6 @@ class _LinuxUSBDetector(_USBDetectorBase):
         # Keep the main thread alive, checking for changes every specified interval
         while not self._stop_thread.is_set():
             self._stop_thread.wait(check_every_seconds)
+
+        # Stop the observer thread
+        self._thread.stop()

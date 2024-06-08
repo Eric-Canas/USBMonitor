@@ -17,3 +17,6 @@ if __name__ == '__main__':
     while _input != 'q':
         _input = input("Monitoring USB connections. Press 'q'+Enter to quit")
     usb_monitor.stop_monitoring()
+
+    # Finished
+    print("Finished")

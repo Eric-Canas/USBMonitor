@@ -16,7 +16,8 @@ import threading
 from warnings import warn
 from abc import ABC, abstractmethod
 
-from ._constants import _SECONDS_BETWEEN_CHECKS
+from ._constants import _SECONDS_BETWEEN_CHECKS, _THREAD_JOIN_TIMEOUT_SECONDS
+
 
 class _USBDetectorBase(ABC):
     def __init__(self, filter_devices: list[dict[str, str]] | tuple[dict[str, str]] = None):
@@ -32,7 +33,6 @@ class _USBDetectorBase(ABC):
         self._thread = None
         self.filter_devices = filter_devices
         self._stop_thread = threading.Event()
-        self.lock = threading.Lock()
 
         if filter_devices is not None:
             assert isinstance(filter_devices, (list, tuple)), f"filter_devices must be a list or a tuple of dicts " \
@@ -150,14 +150,18 @@ class _USBDetectorBase(ABC):
             self._stop_thread.wait(check_every_seconds)
 
 
-    def stop_monitoring(self, warn_if_was_stopped: bool = True) -> None:
+    def stop_monitoring(self, warn_if_was_stopped: bool = True, warn_if_timeout: bool = True,
+                        timeout=_THREAD_JOIN_TIMEOUT_SECONDS) -> None:
         """
         Stops monitoring the USB devices.
         :param warn_if_was_stopped: bool. Whether to warn if the USB monitor was already stopped.
         """
         if self._thread is not None:
             self._stop_thread.set()
-            self._thread.join()
+            self._thread.join(timeout=timeout)
+            if warn_if_timeout and self._thread.is_alive():
+                warn(f"USB monitor thread did not stop in {timeout} seconds. "
+                     f"It could still be running", RuntimeWarning)
             self._thread = None
         elif warn_if_was_stopped:
             warn("USB monitor can not be stopped because it is not running", RuntimeWarning)

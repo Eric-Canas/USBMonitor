@@ -10,7 +10,7 @@ Github: https://github.com/Eric-Canas
 """
 
 from __future__ import annotations
-from .__platform_specific_detectors._constants import _SECONDS_BETWEEN_CHECKS
+from .__platform_specific_detectors._constants import _SECONDS_BETWEEN_CHECKS, _THREAD_JOIN_TIMEOUT_SECONDS
 from warnings import warn
 
 import sys
@@ -95,6 +95,13 @@ class USBMonitor:
                  "when a device is connected or disconnected.")
         self.monitor.start_monitoring(on_connect=on_connect, on_disconnect=on_disconnect,
                                       check_every_seconds=check_every_seconds)
+
+    def stop_monitoring(self, timeout=_THREAD_JOIN_TIMEOUT_SECONDS) -> None:
+        """
+        Stops monitoring the USB devices. This function will stop the background thread that was checking for changes
+        in the USB devices.
+        """
+        self.monitor.stop_monitoring(timeout=timeout)
 
     # When requesting a function that does not exist, it will be redirected to the monitor
     def __getattr__(self, item):
