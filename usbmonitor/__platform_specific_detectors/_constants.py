@@ -28,6 +28,7 @@ _LINUX_TO_WINDOWS_ATTRIBUTES = {
     ID_USB_CLASS_FROM_DATABASE: 'PNPClass',
     DEVNAME: _DEVICE_ID,
     DEVTYPE: _PNP_DEVICE_ID,
+    ID_SERIAL: _PNP_DEVICE_ID
 }
 
 _LINUX_TUPLE_ATTRIBUTES_SEPARATORS = {ID_USB_INTERFACES: ':'}
@@ -35,11 +36,11 @@ _LINUX_TUPLE_ATTRIBUTES_SEPARATORS = {ID_USB_INTERFACES: ':'}
 USB, USBSTOR, USB4 = 'USB', 'USBSTOR', 'USB4'
 
 _WINDOWS_USB_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR_ID: r'VID_([0-9A-Fa-f]{4})',
-                                 DEVTYPE: r'^(.+?)\\'}
+                                 DEVTYPE: r'^(.+?)\\', ID_SERIAL: r'\\([^\\]+)$'}
 _WINDOWS_USB4_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PID_([0-9A-Fa-f]{4})', ID_VENDOR_ID: r'VID_([0-9A-Fa-f]{4})',
-                                  DEVTYPE: r'^(.+?)\\'}
+                                  DEVTYPE: r'^(.+?)\\', ID_SERIAL: r'\\([^\\]+)$'}
 _WINDOWS_USBSTOR_REGEX_ATTRIBUTES = {ID_MODEL_ID: r'PROD_([a-zA-Z0-9\_\/\.\-]{2,16})&', ID_VENDOR_ID: r'VEN_([a-zA-Z0-9\.\_\-\/]{2,8})&',
-                                     DEVTYPE: r'^(.+?)\\'}
+                                     DEVTYPE: r'^(.+?)\\', ID_SERIAL: r'\\([^\\]+)$'}
 
 _WINDOWS_REGEX_ATTRIBUTES_BY_DRIVER = {USB: _WINDOWS_USB_REGEX_ATTRIBUTES,
                                        USBSTOR: _WINDOWS_USBSTOR_REGEX_ATTRIBUTES,
