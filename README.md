@@ -124,5 +124,6 @@ Key | Value Description | Example
 `'ID_USB_INTERFACES'` |	A `tuple` representing the USB device's interfaces. | `('0e0100', '0e0200', '010100', '010200')`
 `'DEVNAME'` | The device name or path  | `'/dev/bus/usb/001/003'`
 `'DEVTYPE'` | Should always be `'usb_device'`. | `'usb_device'`
+`'ID_SERIAL'` | The serial number of the USB device. | `'92C5B92F'`
 
 Note that, depending on the device and the OS, some of this information may be incomplete or certain attributes may overlap with others.
