@@ -32,11 +32,11 @@ class _LinuxUSBDetector(_USBDetectorBase):
         :return: dict[str, dict[str, str]]. The key is the device ID, the value is a dictionary of the device's
                 information.
         """
-        usb_devices = [device for device in self.context.list_devices(subsystem='usb') if ID_VENDOR_ID in device]
+        usb_devices = [device for device in self.context.list_devices(subsystem='usb') if ID_VENDOR_ID in device.properties]
         devices_info = {}
         for device in usb_devices:
-            device_id = device[DEVNAME]
-            device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
+            device_id = device.properties[DEVNAME]
+            device_info = {attr: device.properties.get(attr, "") for attr in DEVICE_ATTRIBUTES}
             device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
             devices_info[device_id] = device_info
 
@@ -65,10 +65,10 @@ class _LinuxUSBDetector(_USBDetectorBase):
 
         def __handle_device_event(device):
             action = device.action
-            if device.get(DEVTYPE) == 'usb_device':
-                device_id = device[DEVNAME]
+            if device.properties.get(DEVTYPE) == 'usb_device':
+                device_id = device.properties[DEVNAME]
                 if action == "add" and on_connect is not None:
-                    device_info = {attr: device.get(attr, "") for attr in DEVICE_ATTRIBUTES}
+                    device_info = {attr: device.properties.get(attr, "") for attr in DEVICE_ATTRIBUTES}
                     device_info = self.__generate_tuple_attributes_from_string(device_info=device_info)
                     on_connect(device_id, device_info)
                     self.last_check_devices = self.get_available_devices()
